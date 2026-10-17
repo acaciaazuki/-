@@ -8,7 +8,11 @@
     "render": "remotion render src/index.jsx DementiaExplainer out/dementia-explainer.mp4",
     "render:audio": "remotion render src/index.jsx DementiaExplainer out/dementia-explainer-with-audio.mp4 --props='{\"audioFile\":\"audio/voiceover_zh-TW.wav\"}'",
     "typecheck": "tsc --noEmit",
-    "test": "node --test tests/video-config.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "ep01:html": "node scripts/ep01-build-html.mjs",
+    "ep01:stills": "node scripts/ep01-stills.mjs",
+    "ep01:tts": "python3 videos/ep01/tts.py",
+    "ep01:render": "node scripts/ep01-render.mjs"
   },
   "dependencies": {
     "react": "18.3.1",
