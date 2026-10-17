@@ -1,3 +1,8 @@
 node_modules/
-out/
+/out/
 .DS_Store
+# Episode 01：單場景中間畫格與合成音訊不提交；sheet_zh.png 與 ep01_zh.mp4 為可檢查成品，予以提交
+videos/ep01/stills/scene_*.png
+videos/ep01/audio/*.wav
+videos/ep01/audio/manifest.json
+__pycache__/
