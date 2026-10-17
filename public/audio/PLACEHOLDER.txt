@@ -1,0 +1,8 @@
+Put your legally licensed voiceover here as:
+- voiceover_zh-TW.wav
+
+Recommended voice direction:
+- 約 20 歲女性、台灣口音、活潑自信
+
+Then run:
+- npm run render:audio

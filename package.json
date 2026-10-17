@@ -1,0 +1,24 @@
+{
+  "name": "dementia-vertical-remotion-video",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "preview": "remotion studio src/index.jsx",
+    "render": "remotion render src/index.jsx DementiaExplainer out/dementia-explainer.mp4",
+    "render:audio": "remotion render src/index.jsx DementiaExplainer out/dementia-explainer-with-audio.mp4 --props='{\"audioFile\":\"audio/voiceover_zh-TW.wav\"}'",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/video-config.test.mjs"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.246"
+  },
+  "devDependencies": {
+    "@remotion/cli": "4.0.246",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "typescript": "5.6.3"
+  }
+}

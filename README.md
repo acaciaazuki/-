@@ -1,152 +1,97 @@
-# -# Motion Video Skill：讓 AI Agent 幫你做動態設計影片
+# 什麼是失智症？60 秒直式教學動畫（Remotion）
 
-[English](https://github.com/nutcelvischen-jpg/motion-video-skill/tree/en) | **繁體中文**
+這個專案提供一支可執行、可預覽、可匯出的 **9:16 直式 60 秒繁體中文教學短片**，主題為「什麼是失智症？」、受眾為高中生。
 
-用一句話告訴 AI 你想做什麼影片，它會寫旁白、做動畫、配音，最後輸出 MP4。
+## 影片規格
 
-- **兩種版型**：直式手繪短影音（教學、概念解釋）／橫式高級感（專題介紹、成果發表）
-- **AI 配音**：Gemini TTS，可指定台灣口音、語氣
-- **字幕自動對齊**：每句台詞的字幕、動畫都跟著配音時間走
-- **可以一直改**：改台詞、改顏色、改動畫，重新跑一次就好
+- 畫布：**1080 x 1920（9:16）**
+- 幀率：**30 fps**
+- 長度：**60 秒（1800 frames）**
+- Composition ID：`DementiaExplainer`
+- 字幕：繁體中文字幕（底部字幕框）
+- 風格：友善、明亮、現代；避免汙名或嘲笑
 
-| 直式短影音 `shorts` | 橫式高級感 `wide` |
-|---|---|
-| ![shorts](docs/preview_shorts.jpg) | ![wide](docs/preview_wide.jpg) |
+## 專案結構
 
-這是一個 **Agent Skill**（`SKILL.md` 格式），可以在 Google Antigravity、Claude Code 等支援 skills 的 AI 工具中使用。
+- `/src/data/script.js`：分鏡、字幕、重點字詞、完整旁白稿（可維護資料檔）
+- `/src/Video.jsx`：動畫主畫面、場景轉場、重點字詞與字幕動畫
+- `/src/videoConfig.js`：影片尺寸、fps、duration 設定
+- `/tests/video-config.test.mjs`：基本規格驗證（1080x1920 / 30fps / 60 秒）
 
----
-
-## 一、準備（約 10 分鐘）
-
-需要：**Python 3.9 以上**、**Git**、網路。
-
-### 1. 開一個工作資料夾
-
-在 Antigravity 開啟一個空資料夾（例如 `my-video`），打開終端機（Terminal）。
-
-### 2. 安裝 skill
+## 安裝
 
 ```bash
-git clone https://github.com/nutcelvischen-jpg/motion-video-skill .agents/skills/motion-video
+npm install
 ```
 
-> 想讓所有專案都能用，可以改放在全域位置：`~/.gemini/config/skills/motion-video`
->
-> 英文版：在 `git clone` 後面加上 `-b en`。
-
-### 3. 安裝套件
-
-Mac：
-```bash
-pip3 install -r .agents/skills/motion-video/requirements.txt
-python3 -m playwright install chromium
-python3 .agents/skills/motion-video/scripts/check_env.py
-```
-Windows：
-```powershell
-pip install -r .agents/skills/motion-video/requirements.txt
-python -m playwright install chromium
-python .agents/skills/motion-video/scripts/check_env.py
-```
-看到「全部就緒！」就完成了。
-
-### 4. 設定配音金鑰（可以晚點再做）
-
-二選一。**金鑰只放在環境變數，不要貼進程式碼、不要傳上 GitHub、不要貼給 AI。**
-
-- **Google AI Studio**（有 Google 帳號就能申請）：到 https://aistudio.google.com 點 Get API key
-- **OpenRouter**：到 https://openrouter.ai 申請 Key（需要儲值）
-
-Mac（每次開新終端機都要重設）：
-```bash
-export GEMINI_API_KEY="貼上你的金鑰"
-```
-Windows PowerShell：
-```powershell
-$env:GEMINI_API_KEY="貼上你的金鑰"
-```
-OpenRouter 的話把 `GEMINI_API_KEY` 換成 `OPENROUTER_API_KEY`。
-
-測試：
-```bash
-python .agents/skills/motion-video/scripts/tts.py --probe
-```
-會產生 `probe.wav`，點開聽聽看。
-
----
-
-## 二、做第一支影片
-
-在 Antigravity 的 Agent 對話框輸入（照抄後改主題）：
-
-> 用 motion-video skill 幫我做一支 45 秒的直式教學短片，主題是「什麼是雲端？」，觀眾是大一新生，用生活比喻解釋，台灣口音、活潑的男生聲音。先給我分鏡大綱和台詞，我確認後再做動畫。
-
-Agent 會依序：
-1. 給你分鏡大綱與台詞 → **你確認或修改**
-2. 建立 `videos/ep01/`，寫好 `script.json` 和 `index.html`
-3. 輸出總覽圖 `stills/sheet_zh.png`，自己檢查畫面
-4. 配音（`tts.py`）
-5. 輸出影片 `videos/ep01/out/ep01_zh.mp4`
-
-想先看動畫效果：在瀏覽器開 `videos/ep01/index.html?play`。
-
-### 常用的修改說法
-
-- 「第二場的箭頭太小，放大一點，改成橘色」
-- 「主持人跟卡片重疊了，把主持人移到右下角」
-- 「s03 的台詞改成『……』，只重新配那一段」
-- 「整體節奏快一點，每個元素晚 0.2 秒離場」
-- 「再做一個英文版」
-- 「換成我們的吉祥物」（把圖片放到 `videos/ep01/assets/`）
-
-### 專題介紹影片範例
-
-> 用 motion-video skill 的 wide 版型，幫我做 60 秒的期末專題介紹影片。專題叫「○○○」，解決的問題是……，三個功能是……，成果數據是……。活潑有自信的女生聲音。
-
----
-
-## 三、自己動手跑指令
-
-不透過 Agent 也可以自己操作。Mac：
+## 啟動預覽
 
 ```bash
-S=.agents/skills/motion-video/scripts
-python3 $S/new_episode.py videos/ep01 --template shorts   # 建立（或 --template wide）
-python3 $S/render.py videos/ep01 --preview                # 更新預覽，瀏覽器開 index.html?play
-python3 $S/render.py videos/ep01 --sheet                  # 總覽圖
-python3 $S/tts.py videos/ep01                             # 配音
-python3 $S/render.py videos/ep01 --lang zh                # 輸出 MP4
-```
-Windows PowerShell：第一行改成 `$S=".agents/skills/motion-video/scripts"`，其餘把 `python3` 換成 `python`。
-
----
-
-## 四、課堂練習
-
-1. **暖身（15 分鐘）**：用 shorts 範本，不改動畫，只改 `script.json` 的台詞，做出自己的版本。
-2. **改動畫（30 分鐘）**：請 Agent 把範例的「餐廳比喻」換成你自己想的比喻，並加一個新道具。
-3. **完成作品（60 分鐘）**：選一個你懂的概念，做一支 45～60 秒的教學短片，含配音。
-4. **互評**：用 `references/design-guide.md` 的檢查清單互相檢查。
-
----
-
-## 五、運作原理
-
-```
-script.json（台詞）──► tts.py ──► narration.wav + timeline.json（每句幾秒）
-                                         │
-index.html（畫面 + GSAP 動畫）◄──────────┘ 動畫時間綁在台詞上
-        │
-        └──► render.py：Playwright 每 1/30 秒呼叫 __seek(t) 截圖 ──► ffmpeg ──► MP4
+npm run preview
 ```
 
-詳細流程寫在 [SKILL.md](SKILL.md)，Agent 會照著做。
+啟動後在 Remotion Studio 預覽 `DementiaExplainer`。
 
----
+## 匯出 MP4（無旁白）
 
-## 授權
+```bash
+npm run render
+```
 
-- 本專案的程式與文件：MIT License
-- `templates/_common/gsap.min.js`：GSAP by GreenSock，依其 [Standard License](https://gsap.com/standard-license) 使用
-- 字型由 Google Fonts 提供（Noto Sans TC、Noto Serif TC、Inter、JetBrains Mono，皆為 OFL 授權）
+輸出檔案：`out/dementia-explainer.mp4`
+
+## 旁白音訊狀態（Placeholder）
+
+目前 repository **未內建商用台灣口音 TTS 音檔**，避免假裝已生成音訊。
+
+- 目標聲音風格：**約 20 歲女性、台灣口音、活潑自信**
+- 動畫可在無音訊狀態下完整預覽與匯出
+- 已保留可替換音訊輸入：`audioFile`
+
+### 如何替換旁白音檔
+
+1. 將你合法可用的旁白音檔放到：`public/audio/voiceover_zh-TW.wav`
+2. 執行：
+
+```bash
+npm run render:audio
+```
+
+輸出檔案：`out/dementia-explainer-with-audio.mp4`
+
+> `render:audio` 會把 `audio/voiceover_zh-TW.wav` 注入 composition props。若未提供檔案，請使用 `npm run render` 產生無聲版本。
+
+## 旁白稿（繁體中文）
+
+已放在 `src/data/script.js` 的 `fullVoiceoverText`：
+
+> 你有沒有過這種時候？手機明明拿在手上，卻一直找手機？
+> 偶爾忘記，通常很正常。但失智症，不只是單純記性變差。
+> 失智症比較像是大腦系統持續出現問題，讓記憶、思考、溝通，甚至日常生活都受到影響。
+> 例如，常常忘記最近發生的事、東西放到奇怪的地方，或在熟悉的地方突然不知道怎麼走。
+> 最常見的原因是阿茲海默症，但失智症其實是一大類狀況的總稱，不只有一種原因。
+> 而且，失智症不是老化的必然結果。年紀變大，不代表一定會失智。
+> 如果身邊的人出現持續而明顯的變化，先別急著責怪或貼標籤，耐心陪伴，也可以鼓勵他和家人尋求專業評估。
+> 記住三件事：失智不只是健忘、不是正常老化、也不代表一個人的價值消失。多一點理解，就能多一點支持！
+
+## 分鏡（時間軸）
+
+- 0–6 秒：手機明明在手上卻找手機
+- 6–13 秒：失智症不只是偶爾忘記
+- 13–21 秒：記憶／思考／溝通／生活受影響
+- 21–28 秒：近期遺忘、放錯物品、熟悉地點迷路（溫和呈現）
+- 28–35 秒：阿茲海默症常見，但失智症是總稱
+- 35–42 秒：正常老化不等於失智症
+- 42–51 秒：陪伴、耐心溝通、鼓勵專業評估
+- 51–60 秒：三個重點與收尾呼籲支持
+
+## 驗證
+
+```bash
+npm run typecheck
+npm test
+```
+
+## 內容與非醫療建議聲明
+
+本影片為教育用途的科普內容，不提供個人化醫療診斷或治療建議。若身邊的人出現持續且明顯的記憶、思考或生活功能變化，請尋求專業醫療評估。
